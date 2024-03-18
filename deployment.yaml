@@ -1,0 +1,39 @@
+piVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-mirror
+  labels:
+    app: go-mirror
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-mirror
+  template:
+    metadata:
+      labels:
+        app: go-mirror
+    spec:
+      containers:
+      - name: go-mirror
+        image: ghcr.io/we11adam/go-mirror:latest
+        ports:
+        - containerPort: 9080
+        env:
+        - name: PORT
+          value: "9080"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-mirror-service
+spec:
+  selector:
+    app: go-mirror
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9080
+  type: ClusterIP
